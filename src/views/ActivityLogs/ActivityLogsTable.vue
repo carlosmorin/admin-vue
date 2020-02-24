@@ -13,18 +13,46 @@
       </div>
     </div>
     <div>
-       <form role="form">
-          <div class="row">
-              <div class="col-lg-10 ">
-                <base-input class="input-group-alternative mb-3"
-                    placeholder="Email">
-                </base-input>
-              </div>
-              <div class="col-lg-2 text-center">
-                <base-button type="primary" size="md">Filtrar</base-button>
-              </div>
-            </div>
-        </form>
+      <form @submit.prevent="filter">
+        <div class="row">
+          <div class="col-lg-3 ml-4">
+            <small class="text-muted ">Bebés: </small>
+            <div class="input-group-alternative mb-3">
+              <select name="" id="" class="form-control" v-model="form.baby_id">
+                <option value="">Todos</option>
+                <option v-for="(baby, index) in babies" v-bind:value="baby.id">
+                  {{ baby.name }}
+                </option>
+              </select>
+            </div>  
+          </div>
+          <div class="col-lg-3 ml-4">
+            <small class="text-muted ">Asistentes: </small>
+            <div class="input-group-alternative mb-3">
+              <select name="" id="" class="form-control" v-model="form.assistant_id">
+                <option value="">Todos</option>
+                <option v-for="(assistant, index) in assistants" v-bind:value="assistant.id">
+                  {{ assistant.name }}
+                </option>
+              </select>
+            </div>  
+          </div>
+          <div class="col-lg-3 ">
+            <small class="text-muted ">Status: </small>
+            <div class="input-group-alternative mb-3">
+              <select name="" id="" class="form-control" v-model="form.status">
+                <option value="">Todos</option>
+                <option  v-for="(status, index) in statuses" v-bind:value="status.key">
+                  {{ status.name }}
+                </option>
+              </select>
+            </div>  
+          </div>
+          <div class="col-lg-2 text-center">
+            <input type="submit" value="Filtrar" class="btn mr-4 btn-primary mt-4">
+          </div>
+        </div>
+      </form>
     </div>
     <div class="table-responsive">
       <base-table class="table align-items-center table-flush"
@@ -107,14 +135,28 @@
     },
     data() {
       return {
-        activity_logs: []
+        form: {
+          baby_is: null,
+          assistant_id: null,
+          status: null
+        },
+        activity_logs: [],
+        babies: [],
+        assistants: [],
+        statuses: [
+          {key: 'in_progress', name: "En progreso"},
+          {key: 'finished', name: "Terminadas"}
+        ]
+
       }
     },
     mounted(){
-      this.fetchCategories()
+      this.fetchActivityLogs()
+      this.fetchBabies()
+      this.fetchAssistants()
     },
     methods: {
-      fetchCategories(){
+      fetchActivityLogs(){
         this.$http
           .get('http://localhost:3000/api/activity_logs')
           .then(response => {
@@ -124,12 +166,49 @@
           .catch(error => {
             console.log("Error", error)
           })
-     
+      },
+      fetchBabies(){
+        this.$http
+          .get('http://localhost:3000/api/babies')
+          .then(response => {
+            console.log("babies_list:", response.data)
+            this.babies = response.data
+          })
+          .catch(error => {
+            console.log("Error", error)
+          })
+      },
+      fetchAssistants(){
+        this.$http
+          .get('http://localhost:3000/api/assistants')
+          .then(response => {
+            this.assistants = response.data
+          })
+          .catch(error => {
+            console.log("Error", error)
+          })
       },
       format_date(value){
         if (value) {
           return moment(String(value)).format('YYYY-MM-DD HH:MM')
         }
+      },
+      filter(){
+        this.$http
+          .get('http://localhost:3000/api/activity_logs', {
+            params:{
+              baby_id: this.form.baby_id,
+              assistant_id: this.form.assistant_id,
+              status: this.form.status
+            }
+          })
+          .then(response => {
+            console.log("response", response.data)
+            this.activity_logs = response.data
+          })
+          .catch(error => {
+            console.log("Error", error)
+          })
       }
     }
   }
