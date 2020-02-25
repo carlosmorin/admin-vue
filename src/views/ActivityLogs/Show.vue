@@ -67,7 +67,8 @@
     name: 'activity-logs-show',
     data() {
       return {
-        object: {}
+        object: {},
+        id: this.$route.params.id
       }
     },
     mounted(){
@@ -75,8 +76,9 @@
     },
     methods: {
       fetchActivityLog(){
+        console.log(this.id)
         this.$http
-          .get('http://localhost:3000/api/activity_logs/1')
+          .get('http://localhost:3000/api/activity_logs/' + this.id)
           .then(response => {
             this.object = response.data
           })

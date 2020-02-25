@@ -1,25 +1,23 @@
 <template>
-  <div class="card shadow"
-       :class="type === 'dark' ? 'bg-default': ''">
-    <div class="card-header border-0"
-         :class="type === 'dark' ? 'bg-transparent': ''">
+  <div class="card shadow">
+    <div class="card-header border-0">
       <div class="row align-items-center">
-        <div class="col">
-          <h3 class="mb-0" :class="type === 'dark' ? 'text-white': ''">
+        <div class="col-lg-7">
+          <h3 class="mb-0">
             Log de actividades
           </h3>
         </div>
       </div>
     </div>
     <div>
-      <form @submit.prevent="filter">
+      <form @submit.prevent="applyFilters">
         <div class="row">
           <div class="col-lg-3 ml-4">
             <small class="text-muted ">Bebés: </small>
             <div class="input-group-alternative mb-3">
-              <select name="" id="" class="form-control" v-model="form.baby_id">
+              <select name="" id="" class="form-control" v-model="form.babdyId">
                 <option value="">Todos</option>
-                <option v-for="(baby, index) in babies" v-bind:value="baby.id">
+                <option v-for="baby in babies" v-bind:value="baby.id">
                   {{ baby.name }}
                 </option>
               </select>
@@ -28,9 +26,9 @@
           <div class="col-lg-3 ml-4">
             <small class="text-muted ">Asistentes: </small>
             <div class="input-group-alternative mb-3">
-              <select name="" id="" class="form-control" v-model="form.assistant_id">
+              <select name="" id="" class="form-control" v-model="form.assistantId">
                 <option value="">Todos</option>
-                <option v-for="(assistant, index) in assistants" v-bind:value="assistant.id">
+                <option v-for="assistant in assistants" v-bind:value="assistant.id">
                   {{ assistant.name }}
                 </option>
               </select>
@@ -41,7 +39,7 @@
             <div class="input-group-alternative mb-3">
               <select name="" id="" class="form-control" v-model="form.status">
                 <option value="">Todos</option>
-                <option  v-for="(status, index) in statuses" v-bind:value="status.key">
+                <option  v-for="status in statuses" v-bind:value="status.key">
                   {{ status.name }}
                 </option>
               </select>
@@ -55,10 +53,8 @@
     </div>
     <div class="table-responsive">
       <base-table class="table align-items-center table-flush"
-                  :class="type === 'dark' ? 'table-dark': ''"
-                  :thead-classes="type === 'dark' ? 'thead-dark': 'thead-light'"
                   tbody-classes="list"
-                  :data="activity_logs">
+                  :data="activityLogs">
         <template slot="columns">
           <th>#</th>
           <th>Bebe</th>
@@ -84,7 +80,7 @@
             {{row.activity_name}}
           </td>
           <td>
-            {{ format_date(row.start_time)}}
+            {{ formatDate(row.start_time)}}
           </td>
           <td>
             <span class="btn mr-4 btn-info btn-sm" v-if="row.stop_time === null">En progreso</span>
@@ -117,6 +113,33 @@
 
       </base-table>
     </div>
+    <div class="card-footer d-flex justify-content-end">
+      <nav >
+        <ul class="pagination">
+          <li class="page-item">
+            <a class="page-link bold"
+              :class="{disabled: currentPage === minPage}"
+              @click.prevent="changePage( currentPage - 1 )">
+                <i class="ni ni-bold-left"></i>
+              </a></li>
+
+          <li class="page-item" 
+              :class="{active: currentPage === item}"
+              :key="item"
+              v-for="item in range(1, totalPages)">
+            <a class="page-link" @click.prevent="changePage(item)">{{item}}</a>
+          </li>
+
+          <li class="page-item">
+            <a class="page-link" 
+              :class="{disabled: currentPage === Number(totalPages)}"
+              @click.prevent="changePage( currentPage + 1 )">
+              <i class="ni ni-bold-right"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
 
   </div>
 </template>
@@ -125,27 +148,23 @@
 
   export default {
     name: 'activity-logs-table',
-    props: {
-      type: {
-        type: String
-      },
-      name: String
-    },
     data() {
       return {
         form: {
-          baby_is: null,
-          assistant_id: null,
+          babdyId: null,
+          assistantId: null,
           status: null
         },
-        activity_logs: [],
+        activityLogs: [],
         babies: [],
         assistants: [],
         statuses: [
           {key: 'in_progress', name: "En progreso"},
           {key: 'finished', name: "Terminadas"}
-        ]
-
+        ],
+        minPage: 1,
+        currentPage: 1,
+        totalPages: 1
       }
     },
     mounted(){
@@ -155,25 +174,29 @@
     },
     methods: {
       fetchActivityLogs(){
+        const params = {
+          page: this.currentPage
+        }
+
         this.$http
-          .get('http://localhost:3000/api/activity_logs')
+          .get('http://localhost:3000/api/activity_logs/', { params })
           .then(response => {
-            console.log("response", response.data)
-            this.activity_logs = response.data
+            this.activityLogs = response.data
+            this.totalPages = response.headers["x-total-pages"]
+            console.log('this.totalPages:', this.totalPages)
           })
           .catch(error => {
-            console.log("Error", error)
+            console.log("Error: ", error)
           })
       },
       fetchBabies(){
         this.$http
           .get('http://localhost:3000/api/babies')
           .then(response => {
-            console.log("babies_list:", response.data)
             this.babies = response.data
           })
           .catch(error => {
-            console.log("Error", error)
+            console.log("Error: ", error)
           })
       },
       fetchAssistants(){
@@ -183,30 +206,40 @@
             this.assistants = response.data
           })
           .catch(error => {
-            console.log("Error", error)
+            console.log("Error: ", error)
           })
       },
-      format_date(value){
-        if (value) {
-          return moment(String(value)).format('YYYY-MM-DD HH:MM')
-        }
-      },
-      filter(){
+      applyFilters(){
         this.$http
           .get('http://localhost:3000/api/activity_logs', {
             params:{
-              baby_id: this.form.baby_id,
-              assistant_id: this.form.assistant_id,
+              baby_id: this.form.babdyId,
+              assistant_id: this.form.assistantId,
               status: this.form.status
             }
           })
           .then(response => {
-            console.log("response", response.data)
-            this.activity_logs = response.data
+            this.activityLogs = response.data
           })
           .catch(error => {
-            console.log("Error", error)
+            console.log("Error: ", error)
           })
+      },
+      changePage(page){
+        this.currentPage = page 
+        this.fetchActivityLogs()
+      },
+      formatDate(value){
+        if (value) {
+          return moment(String(value)).format('YYYY-MM-DD HH:MM')
+        }
+      },
+      range(min, max) {
+        let arr = [];
+        for (let i = min; i <= max; i++) {
+          arr.push(i);
+        }
+        return arr;
       }
     }
   }
@@ -214,5 +247,13 @@
 <style>
   .table-responsive{
     overflow-x: hidden !important; 
+  }
+  a.page-link{
+    cursor: pointer;
+  }
+  a.disabled{
+    pointer-events: none;
+    background: #e5e4e4;
+    color: #b4b4b4;
   }
 </style>
