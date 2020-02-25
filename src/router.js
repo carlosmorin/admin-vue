@@ -44,6 +44,11 @@ export default new Router({
           path: '/activity_logs',
           name: 'activity_logs',
           component: () => import('./views/ActivityLogs.vue')
+        },
+        {
+          path: '/activity_logs/show/:id',
+          name: 'show',
+          component: () => import('./views/ActivityLogs/Show.vue')
         }
       ]
     },

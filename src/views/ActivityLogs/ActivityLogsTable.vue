@@ -9,7 +9,6 @@
             Log de actividades
           </h3>
         </div>
-       
       </div>
     </div>
     <div>
@@ -105,8 +104,7 @@
               </a>
 
               <template>
-
-                <router-link :to="{ name: 'categories', params: { id: row.id } }" class="dropdown-item">
+                <router-link :to="{ path: 'activity_logs/show/' + row.id }" class="dropdown-item">
                   <span>Detalle</span>
                 </router-link>
                 <a class="dropdown-item" href="#">Editar</a>
