@@ -15,7 +15,7 @@
           <div class="col-lg-3 ml-4">
             <small class="text-muted ">Bebés: </small>
             <div class="input-group-alternative mb-3">
-              <select name="" id="" class="form-control" v-model="form.babdyId">
+              <select name="" id="" class="form-control" v-model="filterParams.babdyId">
                 <option value="">Todos</option>
                 <option v-for="baby in babies" v-bind:value="baby.id">
                   {{ baby.name }}
@@ -26,9 +26,9 @@
           <div class="col-lg-3 ml-4">
             <small class="text-muted ">Asistentes: </small>
             <div class="input-group-alternative mb-3">
-              <select name="" id="" class="form-control" v-model="form.assistantId">
+              <select name="" id="" class="form-control" v-model="filterParams.assistantId">
                 <option value="">Todos</option>
-                <option v-for="assistant in assistants" v-bind:value="assistant.id">
+                <option v-for="assistant in assistants" v-bind:value="filterParams.id">
                   {{ assistant.name }}
                 </option>
               </select>
@@ -37,7 +37,7 @@
           <div class="col-lg-3 ">
             <small class="text-muted ">Status: </small>
             <div class="input-group-alternative mb-3">
-              <select name="" id="" class="form-control" v-model="form.status">
+              <select name="" id="" class="form-control" v-model="filterParams.status">
                 <option value="">Todos</option>
                 <option  v-for="status in statuses" v-bind:value="status.key">
                   {{ status.name }}
@@ -150,7 +150,7 @@
     name: 'activity-logs-table',
     data() {
       return {
-        form: {
+        filterParams: {
           babdyId: null,
           assistantId: null,
           status: null
@@ -177,13 +177,11 @@
         const params = {
           page: this.currentPage
         }
-
         this.$http
           .get('http://localhost:3000/api/activity_logs/', { params })
           .then(response => {
             this.activityLogs = response.data
             this.totalPages = response.headers["x-total-pages"]
-            console.log('this.totalPages:', this.totalPages)
           })
           .catch(error => {
             console.log("Error: ", error)
@@ -213,17 +211,22 @@
         this.$http
           .get('http://localhost:3000/api/activity_logs', {
             params:{
-              baby_id: this.form.babdyId,
-              assistant_id: this.form.assistantId,
-              status: this.form.status
+              baby_id: this.filterParams.babdyId,
+              assistant_id: this.filterParams.assistantId,
+              status: this.filterParams.status
             }
           })
           .then(response => {
             this.activityLogs = response.data
+            this.totalPages = response.headers["x-total-pages"]
           })
           .catch(error => {
             console.log("Error: ", error)
           })
+      },
+      setTotalPages(totalPages){
+        console.log(totalPages)
+        this.totalPages = totalPages
       },
       changePage(page){
         this.currentPage = page 

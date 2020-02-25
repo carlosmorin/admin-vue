@@ -4,17 +4,13 @@
         <base-nav class="navbar-top navbar-horizontal navbar-dark"
                   containerClasses="px-4 container"
                   expand>
-            <router-link slot="brand" class="navbar-brand" to="/">
-                <img src="img/brand/white.png"/>
-            </router-link>
-
             <template v-slot="{closeMenu}">
                 <!-- Collapse header -->
                 <div class="navbar-collapse-header d-md-none">
                     <div class="row">
                         <div class="col-6 collapse-brand">
                             <router-link to="/">
-                                <img src="img/brand/green.png">
+                                <img src="img/brand/logo.png">
                             </router-link>
                         </div>
                         <div class="col-6 collapse-close">
