@@ -9,48 +9,46 @@
         </div>
       </div>
     </div>
-    <div>
-      <form @submit.prevent="applyFilters">
-        <div class="row">
-          <div class="col-lg-3 ml-4">
-            <small class="text-muted ">Bebés: </small>
-            <div class="input-group-alternative mb-3">
-              <select name="" id="" class="form-control" v-model="filterParams.babdyId">
-                <option value="">Todos</option>
-                <option v-for="baby in babies" v-bind:value="baby.id">
-                  {{ baby.name }}
-                </option>
-              </select>
-            </div>  
-          </div>
-          <div class="col-lg-3 ml-4">
-            <small class="text-muted ">Asistentes: </small>
-            <div class="input-group-alternative mb-3">
-              <select name="" id="" class="form-control" v-model="filterParams.assistantId">
-                <option value="">Todos</option>
-                <option v-for="assistant in assistants" v-bind:value="filterParams.id">
-                  {{ assistant.name }}
-                </option>
-              </select>
-            </div>  
-          </div>
-          <div class="col-lg-3 ">
-            <small class="text-muted ">Status: </small>
-            <div class="input-group-alternative mb-3">
-              <select name="" id="" class="form-control" v-model="filterParams.status">
-                <option value="">Todos</option>
-                <option  v-for="status in statuses" v-bind:value="status.key">
-                  {{ status.name }}
-                </option>
-              </select>
-            </div>  
-          </div>
-          <div class="col-lg-2 text-center">
-            <input type="submit" value="Filtrar" class="btn mr-4 btn-primary mt-4">
-          </div>
+    <form @submit.prevent="applyFilters">
+      <div class="row">
+        <div class="col-lg-3 ml-4">
+          <small class="text-muted ">Bebés: </small>
+          <div class="input-group-alternative mb-3">
+            <select name="" id="" class="form-control" v-model="filterParams.babdyId">
+              <option value="">Todos</option>
+              <option v-for="baby in babies" v-bind:value="baby.id">
+                {{ baby.name }}
+              </option>
+            </select>
+          </div>  
         </div>
-      </form>
-    </div>
+        <div class="col-lg-3 ml-4">
+          <small class="text-muted ">Asistentes: </small>
+          <div class="input-group-alternative mb-3">
+            <select name="" id="" class="form-control" v-model="filterParams.assistantId">
+              <option value="">Todos</option>
+              <option v-for="assistant in assistants" v-bind:value="filterParams.id">
+                {{ assistant.name }}
+              </option>
+            </select>
+          </div>  
+        </div>
+        <div class="col-lg-3 ">
+          <small class="text-muted ">Status: </small>
+          <div class="input-group-alternative mb-3">
+            <select name="" id="" class="form-control" v-model="filterParams.status">
+              <option value="">Todos</option>
+              <option  v-for="status in statuses" v-bind:value="status.key">
+                {{ status.name }}
+              </option>
+            </select>
+          </div>  
+        </div>
+        <div class="col-lg-2 text-center">
+          <input type="submit" value="Filtrar" class="btn mr-4 btn-primary mt-4">
+        </div>
+      </div>
+    </form>
     <div class="table-responsive">
       <base-table class="table align-items-center table-flush"
                   tbody-classes="list"
