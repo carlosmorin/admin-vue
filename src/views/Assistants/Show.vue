@@ -42,19 +42,14 @@
                         <p>
                           {{ object.created_at }}
                         </p>
-                        <hr />
-                        <div class="text-center border-0 ">
-                          <div class="d-flex justify-content-left">
-                            <router-link :to="{ path: '/assistants' }" class="btn mr-4 btn-secondary btn-md">Atras</router-link>
-                            <router-link :to="{ path: '/assistants/edit/' + object.id }" class="btn mr-4 btn-success btn-md">Editar</router-link>
-                          </div>
-                        </div>
-
                       </div>
                     </div>
-                       <div class="card-footer d-flex justify-content-end">
-  
-                  </div>
+                    <div class="card-footer d-flex justify-content-end">
+                      <div class="d-flex justify-content-left">
+                        <router-link :to="{ path: '/assistants' }" class="btn mr-4 btn-secondary btn-md">Atras</router-link>
+                        <router-link :to="{ path: '/assistants/edit/' + object.id }" class="btn mr-4 btn-success btn-md">Editar</router-link>
+                      </div>
+                    </div>
               </div>
           </div>
       </div>
