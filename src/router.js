@@ -49,7 +49,23 @@ export default new Router({
           path: '/activity_logs/show/:id',
           name: 'show',
           component: () => import('./views/ActivityLogs/Show.vue')
+        },
+        {
+          path: '/assistants',
+          name: 'assistants',
+          component: () => import('./views/Assistants/Index.vue')
+        },
+        {
+          path: '/assistants/show/:id',
+          name: 'assistants',
+          component: () => import('./views/Assistants/Show.vue')
+        },
+        {
+          path: '/assistants/edit/:id',
+          name: 'assistants',
+          component: () => import('./views/Assistants/Edit.vue')
         }
+
       ]
     },
     {

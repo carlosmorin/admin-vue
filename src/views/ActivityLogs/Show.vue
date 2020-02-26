@@ -14,7 +14,6 @@
                                 <span class="btn mr-4 btn-success btn-sm" v-if="object.stop_time !== null">Terminada</span>
                             </div>
                         </div>
-                      
                      
                         <div class="card-body pt-0 pt-md-4">
                           <div class="text-center">

@@ -14,7 +14,7 @@
           }"
         />
         <sidebar-item :link="{name: 'Log de actividades ', icon: 'ni ni-bullet-list-67 text-red', path: '/activity_logs'}"/>
-        <sidebar-item :link="{name: 'Asistentes', icon: 'ni ni-single-02 text-red', path: '/activity_logs'}"/>
+        <sidebar-item :link="{name: 'Asistentes', icon: 'ni ni-single-02 text-red', path: '/assistants'}"/>
       </template>
 <!--       <br>
       <template slot="links">
